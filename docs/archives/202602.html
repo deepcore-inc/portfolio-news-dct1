@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DCT-1 Portfolio News</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0B1829;
+    --navy-mid: #112240;
+    --navy-light: #1a3357;
+    --accent: #4A90D9;
+    --accent-light: #6aaee8;
+    --text: #e8edf2;
+    --text-muted: #8899aa;
+    --bg: #f4f6f8;
+    --card-bg: #ffffff;
+    --border: #e0e6ed;
+    --tag-bg: #eaf1f8;
+    --tag-color: #2c5f8a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: #1a2a3a;
+    min-height: 100vh;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--navy);
+    background-image:
+      radial-gradient(ellipse at 80% 50%, rgba(74,144,217,0.08) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234a90d9' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    padding: 64px 0 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(74,144,217,0.3), transparent);
+  }
+
+  .hero-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    opacity: 0.9;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 5vw, 52px);
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .hero-underline {
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+    margin-top: 20px;
+  }
+
+  .hero-meta {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  /* FUND BADGE */
+  .fund-badge {
+    background: var(--navy-mid);
+    border-bottom: 1px solid rgba(74,144,217,0.15);
+  }
+
+  .fund-badge-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+  }
+
+  .fund-label {
+    padding: 14px 24px 14px 0;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: #fff;
+    border-bottom: 2px solid var(--accent);
+  }
+
+  /* MAIN */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+  }
+
+  /* MONTH NAV */
+  .month-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .month-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #1a2a3a;
+  }
+
+  .month-arrow {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--card-bg);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #778899;
+    transition: all 0.15s;
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .month-arrow:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .month-arrow.disabled {
+    opacity: 0.3;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  /* FILTER */
+  .filter-section {
+    margin-bottom: 32px;
+  }
+
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .filter-btn {
+    padding: 7px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1.5px solid var(--border);
+    background: var(--card-bg);
+    color: #556677;
+    font-weight: 400;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .filter-btn.active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+  }
+
+  .filter-row-2 .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .filter-row-2 {
+    padding-left: 4px;
+  }
+
+  .result-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* NEWS LIST */
+  .news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .news-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .news-item:hover .news-title {
+    color: var(--accent);
+  }
+
+  .news-img-wrap {
+    width: 120px;
+    height: 80px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #dde4ec;
+    flex-shrink: 0;
+  }
+
+  .news-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .news-img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #c8d6e5, #dde8f0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .news-img-placeholder svg {
+    opacity: 0.3;
+  }
+
+  .news-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .news-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .company-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #445566;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 3px;
+    font-size: 11px;
+    background: var(--tag-bg);
+    color: var(--tag-color);
+    font-weight: 400;
+  }
+
+  .news-title {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #1a2a3a;
+    transition: color 0.15s;
+  }
+
+  .news-date {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'Syne', sans-serif;
+    letter-spacing: 0.05em;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--navy);
+    padding: 28px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer .footer-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  footer .footer-right {
+    font-size: 12px;
+    color: #4a5a6a;
+  }
+
+  @media (max-width: 600px) {
+    .hero-inner, .main { padding: 0 20px; }
+    .hero { padding: 48px 0 36px; }
+    .main { padding: 24px 20px 60px; }
+    .news-item { grid-template-columns: 90px 1fr; gap: 14px; }
+    .news-img-wrap { width: 90px; height: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Portfolio News</p>
+    <h1>News</h1>
+    <div class="hero-underline"></div>
+    <p class="hero-meta">（掲載順は初回投資実行順）</p>
+  </div>
+</header>
+
+<nav class="fund-badge">
+  <div class="fund-badge-inner">
+    <span class="fund-label">DCT-1</span>
+  </div>
+</nav>
+
+<main class="main">
+
+  <div class="month-nav">
+    <span id="prevBtn" class="month-arrow" role="button" tabindex="0">&#8592;</span>
+    <span class="month-label" id="monthLabel">2026年2月</span>
+    <span id="nextBtn" class="month-arrow" role="button" tabindex="0">&#8594;</span>
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-row" id="cat1Filters">
+      <button class="filter-btn active" onclick="setFilter1('all', this)">All</button>
+      <button class="filter-btn" onclick="setFilter1('資金調達', this)">資金調達</button>
+      <button class="filter-btn" onclick="setFilter1('事業進捗', this)">事業進捗</button>
+      <button class="filter-btn" onclick="setFilter1('その他', this)">その他</button>
+    </div>
+    <div class="filter-row filter-row-2" id="cat2Filters" style="display:none;"></div>
+  </div>
+
+  <p class="result-count" id="resultCount"></p>
+
+  <div class="news-list" id="newsList"></div>
+</main>
+
+<footer>
+  <span class="footer-brand">DEEPCORE Portfolio News</span>
+  <span class="footer-right">All rights reserved.</span>
+</footer>
+
+<script>
+/* ===== 注入されるデータ ===== */
+const FUND_ID = "dct1";
+const CURRENT_MONTH = "202602";
+const NEWS_ITEMS = [{"no":"1001","company":"株式会社VAAK","cat1":"その他","cat2":"","title":"「おかげで万引きがなくなり、解約を」―― 顧客の声を製品化。『短期集中「ロス削減」パック』提供開始","url":"https://prtimes.jp/main/html/rd/p/000000027.000031447.html","date":"2026.02.12","img":"https://prcdn.freetls.fastly.net/release_image/31447/27/31447-27-3233c73d75d2115705f320dedef9159d-754x405.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1004","company":"メドメイン株式会社","cat1":"その他","cat2":"","title":"メドメイン、テクマトリックスグループ参画に関するお知らせ ― 病理AIの社会実装を加速 ―","url":"https://prtimes.jp/main/html/rd/p/000000054.000034505.html","date":"2026.02.17","img":"https://prcdn.freetls.fastly.net/release_image/34505/54/34505-54-2b48c66cac4ae9e0f02f8e1ef5bfe43c-1920x1280.jpg?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1007","company":"株式会社New Innovations","cat1":"その他","cat2":"","title":"イオンモール浦和美園に「root C LOUNGE」がオープン！スペシャルティコーヒーをゆったり楽しめる空間を提供","url":"https://prtimes.jp/main/html/rd/p/000000150.000046923.html","date":"2026.02.05","img":"https://prcdn.freetls.fastly.net/release_image/46923/150/46923-150-ebae6455d8210e9419afb20c4abe0c2d-1920x1005.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1014","company":"WOTA株式会社","cat1":"その他","cat2":"","title":"WOTA、鹿児島県と「水循環システムの自治体間広域互助プラットフォーム」強化に向けて九州エリア初となる協定を締結","url":"https://prtimes.jp/main/html/rd/p/000000095.000033781.html","date":"2026.02.04","img":"https://prcdn.freetls.fastly.net/release_image/33781/95/33781-95-c19cf50520b6592e4704bb956b1326bf-3900x2369.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1014","company":"WOTA株式会社","cat1":"その他","cat2":"","title":"WOTA、鳥取県と「水循環システムの自治体間広域互助プラットフォーム」強化に向けた協定を締結","url":"https://prtimes.jp/main/html/rd/p/000000097.000033781.html","date":"2026.02.09","img":"https://prcdn.freetls.fastly.net/release_image/33781/97/33781-97-7c241c5e74823550d702c11fc1635c6f-3200x1945.jpg?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1016","company":"株式会社ailead","cat1":"その他","cat2":"","title":"商談解析クラウド ailead、「ITreview Grid Award 2026 Winter」で2部門同時に最高位「Leader」を受賞","url":"https://prtimes.jp/main/html/rd/p/000000120.000040516.html","date":"2026.02.02","img":"https://prcdn.freetls.fastly.net/release_image/40516/120/40516-120-270b74686cada66c5a527e1190d4186f-966x506.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1016","company":"株式会社ailead","cat1":"その他","cat2":"","title":"【事例公開】ドリーム・アーツがaileadを全社導入。急成長フェーズを支える、“人と組織”の共通基盤を構築","url":"https://prtimes.jp/main/html/rd/p/000000121.000040516.html","date":"2026.02.12","img":"https://prcdn.freetls.fastly.net/release_image/40516/121/40516-121-105d828e9d36ef07247b562a926daecb-1200x628.jpg?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1033","company":"株式会社ChillStack","cat1":"その他","cat2":"","title":"ChillStack、「第4回 バックオフィスDXPO大阪’26」に出展（2/24～25）","url":"https://prtimes.jp/main/html/rd/p/000000071.000046548.html","date":"2026.02.13","img":"https://prcdn.freetls.fastly.net/release_image/46548/71/46548-71-19518580a16f934b130585a29ea7aa77-2002x1122.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1040","company":"SOUNDRAW株式会社","cat1":"その他","cat2":"","title":"TuneCore Japan ＆ SOUNDRAW マスタリングサービス 無料キャンペーン実施のお知らせ","url":"https://prtimes.jp/main/html/rd/p/000000023.000059965.html","date":"2026.02.16","img":"https://prcdn.freetls.fastly.net/release_image/59965/23/59965-23-144d3eef028f09761e37c575893bc34a-1200x630.jpg?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1041","company":"株式会社Fivot","cat1":"その他","cat2":"","title":"RFC Venture Debt Fund 1号、iYell株式会社に3億円の融資を実行","url":"https://prtimes.jp/main/html/rd/p/000000041.000078718.html","date":"2026.02.27","img":"https://prcdn.freetls.fastly.net/release_image/78718/41/78718-41-cf2222ac09a4be781525a3437fecfdb3-800x345.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1043","company":"bestat株式会社","cat1":"その他","cat2":"","title":"bestat、2D図面から“対話型AIエージェント”が3D CADモデルを生成する「3D.Core CAD Agent」を提供開始","url":"https://prtimes.jp/main/html/rd/p/000000025.000091105.html","date":"2026.02.03","img":"https://prcdn.freetls.fastly.net/release_image/91105/25/91105-25-096b8349e7393e599f6b782ac51bad1a-1920x1280.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1044","company":"株式会社RevComm","cat1":"その他","cat2":"","title":"Web会議解析AI「MiiTel Meetings」、Webexと連携","url":"https://prtimes.jp/main/html/rd/p/000000334.000037840.html","date":"2026.02.05","img":"https://prcdn.freetls.fastly.net/release_image/37840/334/37840-334-24073c576dc9f4e32f3228f7c4c54127-3840x2010.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1044","company":"株式会社RevComm","cat1":"その他","cat2":"","title":"対面会話解析AI「MiiTel RecPod」、分析機能を強化","url":"https://prtimes.jp/main/html/rd/p/000000335.000037840.html","date":"2026.02.12","img":"https://prcdn.freetls.fastly.net/release_image/37840/335/37840-335-132b4834800fd5144b55871ab323126a-3840x2010.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1044","company":"株式会社RevComm","cat1":"その他","cat2":"","title":"レブコム、国際セキュリティ認証「SOC2(R) Type1保証報告書」を取得","url":"https://prtimes.jp/main/html/rd/p/000000340.000037840.html","date":"2026.02.18","img":"https://prcdn.freetls.fastly.net/release_image/37840/340/37840-340-d8fbbc27c93622aad9701ecde08b0a58-1920x1005.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1044","company":"株式会社RevComm","cat1":"その他","cat2":"","title":"はじめての機械学習は、この一冊から！『じわじわわかる機械学習　データ分析・アルゴリズムのなかみ』Amazonで予約受付中","url":"https://prtimes.jp/main/html/rd/p/000000341.000037840.html","date":"2026.02.24","img":"https://prcdn.freetls.fastly.net/release_image/37840/341/37840-341-124496cca5df6ea425da1a7143483106-872x1256.jpg?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1044","company":"株式会社RevComm","cat1":"その他","cat2":"","title":"音声解析AI「MiiTel」が「楽天トラベル」の宿泊施設向けコンサルティング業務に導入","url":"https://prtimes.jp/main/html/rd/p/000000342.000037840.html","date":"2026.02.26","img":"https://prcdn.freetls.fastly.net/release_image/37840/342/37840-342-3bb6edd59b1c29aaa1bf021a9dfc4923-3840x2010.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1045","company":"GMOサイバーセキュリティbyイエラエ株式会社","cat1":"その他","cat2":"","title":"GMOサイバーセキュリティ byイエラエ、「GMOサイバー攻撃 ネットde診断 ASM」でFortiSIEMの深刻な未認証リモートコード実行脆弱性に緊急対応","url":"https://prtimes.jp/main/html/rd/p/000005231.000000136.html","date":"2026.02.02","img":"https://prcdn.freetls.fastly.net/release_image/136/5231/136-5231-559e37bf0ab13373c5584156336f7342-3900x2041.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1047","company":"株式会社スマートラウンド","cat1":"その他","cat2":"","title":"smartround、GP等によるファンド管理の事務負担を軽減する「組合員管理」をリリース","url":"https://prtimes.jp/main/html/rd/p/000000086.000042542.html","date":"2026.02.19","img":"https://prcdn.freetls.fastly.net/release_image/42542/86/42542-86-c3c5db9818ec4383e409dc1300024955-3840x2016.jpg?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1047","company":"株式会社スマートラウンド","cat1":"その他","cat2":"","title":"smartround、投資ポートフォリオ全体のパフォーマンスが一目でわかる「分析グラフ」機能をリリース","url":"https://prtimes.jp/main/html/rd/p/000000087.000042542.html","date":"2026.02.26","img":"https://prcdn.freetls.fastly.net/release_image/42542/87/42542-87-3692e8ee019b0cd703c0fc4fedd95cce-3840x2016.jpg?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1057","company":"株式会社カンリー","cat1":"その他","cat2":"","title":"【Google が示す、AI時代の新しい買い物体験とは 他】Google マップ・Google ビジネスプロフィールのアップデート情報（2026年1月版）を無料公開","url":"https://prtimes.jp/main/html/rd/p/000000486.000037205.html","date":"2026.02.02","img":"https://prcdn.freetls.fastly.net/release_image/37205/486/37205-486-9b856253ba5497357485cb8cc1f4e24f-755x358.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1057","company":"株式会社カンリー","cat1":"その他","cat2":"","title":"カンリー、 執行役員CHRO就任のお知らせ","url":"https://prtimes.jp/main/html/rd/p/000000487.000037205.html","date":"2026.02.02","img":"https://prcdn.freetls.fastly.net/release_image/37205/487/37205-487-99e44eee86844689427e2c4334f5493e-1201x631.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1057","company":"株式会社カンリー","cat1":"その他","cat2":"","title":"「まずは見学してみたい」につなげるWeb施策　 入居検討者・家族が見る重要ポイント」とは？｜セミナー開催","url":"https://prtimes.jp/main/html/rd/p/000000490.000037205.html","date":"2026.02.04","img":"https://prcdn.freetls.fastly.net/release_image/37205/490/37205-490-76e625fb7fab737c0738ac2c3ff5a7d2-1380x675.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1057","company":"株式会社カンリー","cat1":"その他","cat2":"","title":"【カンリー福利厚生】カーシェアリングサービス「タイムズカー」の割引優待掲載を開始！月額基本料金3ヶ月無料により「移動の利便性向上」を支援","url":"https://prtimes.jp/main/html/rd/p/000000473.000037205.html","date":"2026.02.06","img":"https://prcdn.freetls.fastly.net/release_image/37205/473/37205-473-f37daafdc69cc2d4ff2733e7734be1c5-1200x630.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1057","company":"株式会社カンリー","cat1":"その他","cat2":"","title":"その「合格実績」を見る前に、静かな足切りは始まっている！ 新年度に仕掛けるべき、問い合わせ獲得のためのWeb戦略とは｜セミナー開催","url":"https://prtimes.jp/main/html/rd/p/000000491.000037205.html","date":"2026.02.10","img":"https://prcdn.freetls.fastly.net/release_image/37205/491/37205-491-ce4a586537443d64f44230c636faba33-1380x675.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1057","company":"株式会社カンリー","cat1":"その他","cat2":"","title":"カンリー、3件のM&A（グループジョイン）を実行","url":"https://prtimes.jp/main/html/rd/p/000000492.000037205.html","date":"2026.02.17","img":"https://prcdn.freetls.fastly.net/release_image/37205/492/37205-492-58d8d32644b9958960544be7455b56e7-1200x630.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1057","company":"株式会社カンリー","cat1":"その他","cat2":"","title":"カンリー、ITR調査「店舗集客・MEO対策支援システム市場」において年商100億円以上の企業で2年連続 国内シェアNo.1、卸・小売業分野で3年連続 国内シェアNo.1を獲得","url":"https://prtimes.jp/main/html/rd/p/000000489.000037205.html","date":"2026.02.18","img":"https://prcdn.freetls.fastly.net/release_image/37205/489/37205-489-f2dcfea954cffa45932803a2df28a444-1200x630.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1057","company":"株式会社カンリー","cat1":"その他","cat2":"","title":"ネットのクチコミは、現代における『地域の噂話』。 AIが勝手に広めてしまう前に、 葬儀社が始めておくべき対策とは？｜セミナー開催","url":"https://prtimes.jp/main/html/rd/p/000000493.000037205.html","date":"2026.02.19","img":"https://prcdn.freetls.fastly.net/release_image/37205/493/37205-493-f0e5aab12d2a923931632da805b4975d-920x450.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1057","company":"株式会社カンリー","cat1":"その他","cat2":"","title":"【カンリー福利厚生】リラクゼーションスペース「りらくる」の割引優待掲載を開始！「従業員のリフレッシュ」を支援","url":"https://prtimes.jp/main/html/rd/p/000000494.000037205.html","date":"2026.02.25","img":"https://prcdn.freetls.fastly.net/release_image/37205/494/37205-494-eaa8e2aaaa3687b117f3e2396a75f067-1200x630.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1057","company":"株式会社カンリー","cat1":"その他","cat2":"","title":"AI検索の普及で「お店探しの習慣」はどこまで変わったの？ 最新アンケートをもとに、この半年間の変化を徹底解説｜セミナー開催","url":"https://prtimes.jp/main/html/rd/p/000000496.000037205.html","date":"2026.02.26","img":"https://prcdn.freetls.fastly.net/release_image/37205/496/37205-496-85e23dac8a905c858abe904b1aae246c-920x450.png?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1060","company":"TechMagic株式会社","cat1":"その他","cat2":"","title":"エスコンフィールドHOKKAIDO内「tower eleven onsen & sauna」に自動調理ロボットを活用した“サウナ飯”メニューを試験導入","url":"https://prtimes.jp/main/html/rd/p/000000093.000046356.html","date":"2026.02.26","img":"https://prcdn.freetls.fastly.net/release_image/46356/93/46356-93-2f67371dafdc4eaeb3f031bd7a5ed944-2048x1365.jpg?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"},{"no":"1061","company":"株式会社Skillnote","cat1":"その他","cat2":"","title":"三菱ケミカル、「Skillnote」を導入し、新人教育の期間が50％改善","url":"https://prtimes.jp/main/html/rd/p/000000093.000088452.html","date":"2026.02.03","img":"https://prcdn.freetls.fastly.net/release_image/88452/93/88452-93-b4412fa6c34468b841a24d2ea251770c-3900x2600.jpg?format=jpeg&amp;auto=webp&amp;fit=bounds&amp;width=2400&amp;height=1260"}];
+const PREV_URL = "202601.html";
+const NEXT_URL = "202603.html";
+
+/* ===== カテゴリ定義 ===== */
+const SUB_CATS = {
+  '資金調達': [],
+  '事業進捗': ['プロダクト', 'パートナーシップ', '導入事例'],
+  'その他': ['特集', '受賞・採択', '出版・発信', '組織・人事'],
+};
+
+/* ===== 状態 ===== */
+let currentCat1 = 'all';
+let currentCat2 = 'all';
+
+/* ===== ユーティリティ ===== */
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/* ===== ナビゲーション ===== */
+function setupNav() {
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  if (PREV_URL) {
+    prevBtn.style.cursor = 'pointer';
+    prevBtn.addEventListener('click', () => { window.location.href = PREV_URL; });
+    prevBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter') window.location.href = PREV_URL; });
+  } else {
+    prevBtn.classList.add('disabled');
+  }
+
+  if (NEXT_URL) {
+    nextBtn.style.cursor = 'pointer';
+    nextBtn.addEventListener('click', () => { window.location.href = NEXT_URL; });
+    nextBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter') window.location.href = NEXT_URL; });
+  } else {
+    nextBtn.classList.add('disabled');
+  }
+}
+
+/* ===== フィルター ===== */
+function setFilter1(cat, btn) {
+  currentCat1 = cat;
+  currentCat2 = 'all';
+  document.querySelectorAll('#cat1Filters .filter-btn').forEach((b) => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateSubFilters();
+  render();
+}
+
+function setFilter2(cat, btn) {
+  currentCat2 = cat;
+  document.querySelectorAll('#cat2Filters .filter-btn').forEach((b) => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function updateSubFilters() {
+  const row2 = document.getElementById('cat2Filters');
+  const subs = SUB_CATS[currentCat1] || [];
+
+  if (currentCat1 === 'all' || subs.length === 0) {
+    row2.style.display = 'none';
+    return;
+  }
+
+  row2.innerHTML =
+    '<button class="filter-btn active" onclick="setFilter2(\'all\',this)">すべて</button>' +
+    subs.map((s) => `<button class="filter-btn" onclick="setFilter2('${escHtml(s)}',this)">${escHtml(s)}</button>`).join('');
+  row2.style.display = 'flex';
+}
+
+/* ===== レンダリング ===== */
+function placeholderSvg() {
+  return `<div class="news-img-placeholder"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="3" fill="#aabbcc"/><path d="M4 17l5-5 3 3 4-5 4 6H4z" fill="white" opacity="0.6"/></svg></div>`;
+}
+
+function render() {
+  const filtered = NEWS_ITEMS.filter((n) => {
+    if (currentCat1 !== 'all' && n.cat1 !== currentCat1) return false;
+    if (currentCat2 !== 'all' && n.cat2 !== currentCat2) return false;
+    return true;
+  });
+
+  document.getElementById('resultCount').textContent = `${filtered.length}件の記事`;
+
+  const list = document.getElementById('newsList');
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<p style="color:var(--text-muted);font-size:14px;padding:40px 0;">この月のニュースはありません。</p>';
+    return;
+  }
+
+  list.innerHTML = filtered.map((n) => {
+    const imgHtml = n.img
+      ? `<img src="${escHtml(n.img)}" alt="${escHtml(n.company)}" loading="lazy" onerror="this.parentElement.innerHTML='${placeholderSvg().replace(/'/g, "\\'")}';">`
+      : placeholderSvg();
+
+    const tagHtml = n.cat2
+      ? `<span class="tag">${escHtml(n.cat2)}</span>`
+      : n.cat1 && n.cat1 !== 'all'
+        ? `<span class="tag">${escHtml(n.cat1)}</span>`
+        : '';
+
+    return `
+    <a class="news-item" href="${escHtml(n.url)}" target="_blank" rel="noopener noreferrer">
+      <div class="news-img-wrap">${imgHtml}</div>
+      <div class="news-body">
+        <div class="news-meta">
+          <span class="company-name">${escHtml(n.company)}</span>
+          ${tagHtml}
+        </div>
+        <p class="news-title">${escHtml(n.title)}</p>
+        <span class="news-date">${escHtml(n.date)}</span>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+/* ===== 初期化 ===== */
+document.addEventListener('DOMContentLoaded', () => {
+  setupNav();
+  render();
+});
+</script>
+</body>
+</html>
